@@ -96,7 +96,7 @@ public final class MainActivity extends Activity {
             int height = (int) (getHeight() / drawScale);
             canvas.drawColor(Color.rgb(13, 19, 26));
 
-            text(canvas, "iPhone Bluetooth PAN Hotspot v2.0.1", 36, 46, 28, Color.WHITE, true);
+            text(canvas, "Bluetooth PAN v3.0.0", 36, 46, 28, Color.WHITE, true);
 
             float top = 68;
             phoneCard.set(32, top, width * .52f, top + 86);
@@ -152,7 +152,7 @@ public final class MainActivity extends Activity {
             paint.setColor(Color.WHITE);
             canvas.drawCircle(automatic ? track.right - 13 : track.left + 13, track.centerY(), 10, paint);
 
-            text(canvas, "Uses the paired iPhone’s Personal Hotspot. Automatic reconnect is off by default.",
+            text(canvas, "Uses the selected phone’s Bluetooth tethering. Automatic reconnect is off by default.",
                 36, height - 19, 14, Color.rgb(112, 130, 147), false);
             canvas.restore();
         }
@@ -186,6 +186,6 @@ public final class MainActivity extends Activity {
     }
 
     private static String name(BluetoothDevice device) {
-        return device.getName() == null ? "Unnamed iPhone" : device.getName();
+        return device.getName() == null ? "Unnamed phone" : device.getName();
     }
 }

@@ -1,6 +1,8 @@
-# iPhone Bluetooth PAN for NEMESIS
+# Bluetooth PAN for NEMESIS
 
-A small Android 4.4 application and NEMESIS 1.16 package that connects a compatible Hyundai/Kia head unit to an iPhone Personal Hotspot using Bluetooth PAN.
+A small Android 4.4 application and NEMESIS 1.16 package that connects a
+compatible Hyundai/Kia head unit to a paired phone's internet connection using
+Bluetooth PAN.
 
 The package uses the Bluetooth PANU implementation already present in the stock firmware. It does not replace `Bluetooth.apk`, patch the Bluetooth stack, or require HMG-API.
 
@@ -32,14 +34,14 @@ standard Gen5W Bluetooth PAN APIs, but they have not yet been tested.
 
 ### USB drive (recommended)
 
-Download `iphone.bluetooth.pan-<version>-usb.zip` and extract it to the root of
+Download `bluetooth.pan-<version>-usb.zip` and extract it to the root of
 a USB drive. The result should look like this:
 
 ```text
 NEMESIS.data
 README.txt
 packages/
-└── iphone.bluetooth.pan-<version>.zip
+└── bluetooth.pan-<version>.zip
 ```
 
 Insert the drive after Android has started and accept the NEMESIS installation
@@ -47,29 +49,42 @@ prompt.
 
 ### Package Store or ADB
 
-The bare `iphone.bluetooth.pan-<version>.zip` is the canonical package archive
+The bare `bluetooth.pan-<version>.zip` is the canonical package archive
 used for Package Store submission and direct installation:
 
 ```sh
-adb push iphone.bluetooth.pan-2.0.1.zip /data/local/tmp/iphone.bluetooth.pan.zip
-adb shell '/system/xbin/nemesis install /data/local/tmp/iphone.bluetooth.pan.zip'
-adb shell '/system/xbin/nemesis pkg-launch iphone.bluetooth.pan'
+adb push bluetooth.pan-3.0.0.zip /data/local/tmp/bluetooth.pan.zip
+adb shell '/system/xbin/nemesis install /data/local/tmp/bluetooth.pan.zip'
+adb shell '/system/xbin/nemesis pkg-launch bluetooth.pan'
 ```
 
-On the iPhone, enable **Settings → Personal Hotspot → Allow Others to Join**. The phone must already be paired with the vehicle.
+The phone must already be paired with the vehicle. Enable its Bluetooth
+tethering or Bluetooth hotspot service before pressing Connect. On some phones,
+this is separate from the Wi-Fi hotspot setting.
+
+### Migrating from versions 2.0.1 and earlier
+
+Version 3.0.0 uses the new NEMESIS ID `bluetooth.pan` and Android package
+`org.egmp.bluetoothpan`. Uninstall the legacy package before installing 3.0.0:
+
+```sh
+adb shell '/system/xbin/nemesis uninstall iphone.bluetooth.pan'
+```
+
+NEMESIS will refuse to install both identities together, preventing two
+supervisors from attempting to control the same stock PAN service.
 
 ## Diagnostics
 
 ```sh
-adb shell '/system/xbin/nemesis service status iphone.bluetooth.pan/pan-supervisor'
-adb shell '/system/xbin/nemesis log service iphone.bluetooth.pan/pan-supervisor'
+adb shell '/system/xbin/nemesis service status bluetooth.pan/pan-supervisor'
+adb shell '/system/xbin/nemesis log service bluetooth.pan/pan-supervisor'
 ```
 
 The supervisor log includes the app's connection requests, PAN profile state,
 Bluetooth connection transitions, network state, and Android runtime failures.
 It is also included when **Logs → Copy to USB** is used in NEMESIS Manager. A
-successful connection creates `bt-pan`, normally with an address in the
-iPhone's `172.20.10.0/28` network.
+successful connection creates `bt-pan` with an address assigned by the phone.
 
 ## Build
 
@@ -87,13 +102,13 @@ Set `ANDROID_HOME`, then run:
 
 The build produces exactly two release artifacts in `dist/`:
 
-- `iphone.bluetooth.pan-<version>-usb.zip` — recommended USB distribution
-- `iphone.bluetooth.pan-<version>.zip` — Package Store and direct-install archive
+- `bluetooth.pan-<version>-usb.zip` — recommended USB distribution
+- `bluetooth.pan-<version>.zip` — Package Store and direct-install archive
 
 You may provide an external signing key:
 
 ```sh
-APP_KEY=/secure/path/iphone-pan.p12 APP_KEY_PASS='…' ./build.sh
+APP_KEY=/secure/path/bluetooth-pan.p12 APP_KEY_PASS='…' ./build.sh
 ```
 
 Without `APP_KEY`, the build creates a temporary development key. NEMESIS package

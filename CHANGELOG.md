@@ -1,5 +1,18 @@
 # Changelog
 
+## 3.0.0
+
+- Rename the product from iPhone Bluetooth PAN to Bluetooth PAN.
+- Support any paired phone that provides standard Bluetooth tethering or a PAN
+  Network Access Point service.
+- Rename the NEMESIS package to `bluetooth.pan`, the Android application ID to
+  `org.egmp.bluetoothpan`, the APK to `BluetoothPan.apk`, and release archives
+  to `bluetooth.pan-<version>.zip`.
+- Replace phone-vendor-specific UI, status, documentation, logging, and build
+  identifiers with generic Bluetooth PAN terminology.
+- Conflict with the legacy `iphone.bluetooth.pan` package so both supervisors
+  cannot be installed simultaneously.
+
 ## 2.0.1
 
 - Apply the automatic-reconnect cooldown immediately after a live connection
@@ -28,7 +41,7 @@
 
 - Detect a PAN request that the remote endpoint immediately drops instead of
   leaving the dashboard in a misleading 30-second connecting state.
-- Report the fast rejection within three seconds with a Personal Hotspot hint,
+- Report the fast rejection within three seconds with a Bluetooth tethering hint,
   while preserving the full timeout for connections that remain in progress.
 
 ## 1.9.1

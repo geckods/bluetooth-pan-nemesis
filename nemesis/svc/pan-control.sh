@@ -7,7 +7,7 @@
 # that same log; the supervisor loop remains the managed workload.
 
 PAN_COMPONENT=com.android.bluetooth/.pan.PanService
-APP_COMPONENT=org.egmp.bluetoothpan.nemesis/org.egmp.bluetoothpan.PanControllerService
+APP_COMPONENT=org.egmp.bluetoothpan/org.egmp.bluetoothpan.PanControllerService
 LOGCAT_PID=
 
 cleanup() {
@@ -35,15 +35,15 @@ while [ "$(getprop sys.boot_completed)" != "1" ]; do
     sleep 2
 done
 
-echo "===== iPhone Bluetooth PAN 2.0.1 diagnostic session $(date) ====="
-echo "iPhone PAN: supervisor started"
-logcat -v time -s BtPanTest:I BluetoothPan:D PanService:D AndroidRuntime:E '*:S' &
+echo "===== Bluetooth PAN 3.0.0 diagnostic session $(date) ====="
+echo "Bluetooth PAN: supervisor started"
+logcat -v time -s BluetoothPanApp:I BluetoothPan:D PanService:D AndroidRuntime:E '*:S' &
 LOGCAT_PID=$!
-echo "iPhone PAN: diagnostic logcat pid=$LOGCAT_PID"
+echo "Bluetooth PAN: diagnostic logcat pid=$LOGCAT_PID"
 # Android can report boot complete before the Bluetooth adapter has restored
 # its bonded-device database. Starting PanService in that window can leave it
 # alive but unable to allocate bt-pan, so allow Bluetooth to settle first.
-echo "iPhone PAN: waiting for Bluetooth startup"
+echo "Bluetooth PAN: waiting for Bluetooth startup"
 sleep 10
 start_pan
 start_controller
@@ -55,12 +55,12 @@ while true; do
     # receives that start request during an active connection.
     if ! dumpsys activity services com.android.bluetooth/.pan.PanService 2>/dev/null \
         | grep -q 'ServiceRecord'; then
-        echo "iPhone PAN: stock PAN service stopped; starting it"
+        echo "Bluetooth PAN: stock PAN service stopped; starting it"
         start_pan
     fi
     if ! dumpsys activity services "$APP_COMPONENT" 2>/dev/null \
         | grep -q 'ServiceRecord'; then
-        echo "iPhone PAN: controller stopped; starting it"
+        echo "Bluetooth PAN: controller stopped; starting it"
         start_controller
     fi
 done

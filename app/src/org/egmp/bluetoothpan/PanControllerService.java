@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Set;
 
 public final class PanControllerService extends Service {
-    private static final String TAG = "BtPanTest";
+    private static final String TAG = "BluetoothPanApp";
     private static final int PROFILE_PAN = 5;
     private static final int DISCONNECTED = 0;
     private static final int CONNECTING = 1;
@@ -215,7 +215,7 @@ public final class PanControllerService extends Service {
                 transition(Phase.CONFIGURING_NETWORK, "PAN_LINK_CONNECTED",
                         "Bluetooth connected; configuring network");
             } else if (now >= phaseDeadline) {
-                transition(Phase.ERROR, "NETWORK_TIMEOUT", "Connected to iPhone, but no network");
+                transition(Phase.ERROR, "NETWORK_TIMEOUT", "Connected to phone, but no network");
             }
             return;
         }
@@ -223,7 +223,7 @@ public final class PanControllerService extends Service {
             disconnectedConnectPolls = 0;
             transition(Phase.CONNECTING, "PAN_LINK_CONNECTING", "Connecting to " + name(selected));
             if (phaseDeadline == 0L) phaseDeadline = now + CONNECT_TIMEOUT_MS;
-            if (now >= phaseDeadline) finishConnectFailure(now, "CONNECT_TIMEOUT", "iPhone did not respond");
+            if (now >= phaseDeadline) finishConnectFailure(now, "CONNECT_TIMEOUT", "Phone did not respond");
             return;
         }
         if (link == DISCONNECTING) {
@@ -240,9 +240,9 @@ public final class PanControllerService extends Service {
             if (disconnectedConnectPolls >= 3) {
                 immediateFailureCount++;
                 if (immediateFailureCount >= 2 && recoveryCount == 0) beginPanRecovery(now);
-                else finishConnectFailure(now, "IMMEDIATE_DROP", "PAN rejected; check Personal Hotspot");
+                else finishConnectFailure(now, "IMMEDIATE_DROP", "PAN rejected; check Bluetooth tethering");
             } else if (now >= phaseDeadline) {
-                finishConnectFailure(now, "CONNECT_TIMEOUT", "iPhone did not respond");
+                finishConnectFailure(now, "CONNECT_TIMEOUT", "Phone did not respond");
             }
             return;
         }
@@ -463,7 +463,8 @@ public final class PanControllerService extends Service {
 
     private String connectedMessage() {
         String address = interfaceAddress("bt-pan");
-        return "Connected through iPhone" + (address.length() == 0 ? "" : "\nAddress: " + address);
+        return "Connected through " + name(selected)
+                + (address.length() == 0 ? "" : "\nAddress: " + address);
     }
 
     private boolean desiredConnected() { return prefs.getBoolean("requested_connect", false); }
@@ -488,7 +489,7 @@ public final class PanControllerService extends Service {
     private static void sleep(long ms) {
         try { Thread.sleep(ms); } catch (InterruptedException ignored) { Thread.currentThread().interrupt(); }
     }
-    private static String name(BluetoothDevice d) { return d.getName() == null ? "iPhone" : d.getName(); }
+    private static String name(BluetoothDevice d) { return d.getName() == null ? "phone" : d.getName(); }
     private static String label(BluetoothDevice d) { return name(d) + "(" + d.getAddress() + ")"; }
     private static String rootMessage(Throwable t) {
         while (t.getCause() != null) t = t.getCause();
